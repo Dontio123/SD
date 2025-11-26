@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+	<LangVersion>latest</LangVersion>
+    <EnableHotReload>true</EnableHotReload>
+    <EnableXamlHotReload>true</EnableXamlHotReload>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\close.png" />
+    <None Remove="Images\email.png" />
+    <None Remove="Images\englogo.png" />
+    <None Remove="Images\fullscreen.png" />
+    <None Remove="Images\minimize.png" />
+    <None Remove="Images\padlock.png" />
+    <None Remove="Images\SD_Logo-removebg-preview.png" />
+    <None Remove="Images\search.png" />
+    <None Remove="Images\wmsu.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\close.png" />
+    <Resource Include="Images\email.png" />
+    <Resource Include="Images\englogo.png" />
+    <Resource Include="Images\fullscreen.png" />
+    <Resource Include="Images\minimize.png" />
+    <Resource Include="Images\padlock.png" />
+    <Resource Include="Images\SD_Logo-removebg-preview.png" />
+    <Resource Include="Images\search.png" />
+    <Resource Include="Images\wmsu.png" />
+  </ItemGroup>
+
+    <ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>

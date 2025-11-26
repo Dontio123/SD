@@ -1,0 +1,649 @@
+﻿<Window x:Class="ShelfMaster.Views.StudentDashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:ShelfMaster.Converters"
+        xmlns:viewmodels="clr-namespace:ShelfMaster.ViewModels"
+        mc:Ignorable="d"
+        Title="Student Dashboard"
+        Height="760"
+        Width="1250"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Window.Resources>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:ViewVisibilityConverter x:Key="ViewVisibilityConverter"/>
+
+        <LinearGradientBrush x:Key="ShellBackground" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#f4f7ff" Offset="0"/>
+            <GradientStop Color="#eef2ff" Offset="1"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="CardSurfaceStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="25" ShadowDepth="4" Color="#15000000" Opacity="0.4"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="30" ShadowDepth="6" Color="#20000000" Opacity="0.5"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform Y="-2"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ChipStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Background" Value="#e6efff"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+        </Style>
+
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="18,14"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#6c7a89"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#f0f4ff"/>
+                                <Setter Property="Foreground" Value="#0f4c81"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NavButtonActiveStyle" TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+            <Setter Property="Background" Value="#e6efff"/>
+            <Setter Property="Foreground" Value="#0f4c81"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource ShellBackground}" Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Navigation -->
+        <Border Background="White"
+                CornerRadius="24,0,0,24"
+                BorderBrush="#e1e7ef"
+                BorderThickness="1">
+            <StackPanel Margin="16,24">
+                <TextBlock Text="Navigation"
+                           FontWeight="Bold"
+                           Foreground="#0f4c81"
+                           FontSize="16"
+                           Margin="4,0,0,16"/>
+
+                <Button Content="Dashboard"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Dashboard">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="Dashboard">
+                                    <Setter Property="Background" Value="#e6efff"/>
+                                    <Setter Property="Foreground" Value="#0f4c81"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Browse Catalog"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="BrowseCatalog"
+                        Margin="0,8,0,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="BrowseCatalog">
+                                    <Setter Property="Background" Value="#e6efff"/>
+                                    <Setter Property="Foreground" Value="#0f4c81"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Requests"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Requests"
+                        Margin="0,8,0,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="Requests">
+                                    <Setter Property="Background" Value="#e6efff"/>
+                                    <Setter Property="Foreground" Value="#0f4c81"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Loans"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Loans"
+                        Margin="0,8,0,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="Loans">
+                                    <Setter Property="Background" Value="#e6efff"/>
+                                    <Setter Property="Foreground" Value="#0f4c81"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Settings"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Settings"
+                        Margin="0,8,0,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="Settings">
+                                    <Setter Property="Background" Value="#e6efff"/>
+                                    <Setter Property="Foreground" Value="#0f4c81"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Border Grid.Column="1"
+                CornerRadius="0,24,24,0"
+                Background="#f9fbff"
+                Padding="30"
+                MouseDown="RootBorder_MouseDown">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="SHELFMASTER"
+                                   FontSize="34"
+                                   FontWeight="Bold"
+                                   Foreground="#101828"/>
+                        <TextBlock Text="{Binding StudentName, StringFormat='Hello, {0}!'}"
+                                   Foreground="#667085"
+                                   FontSize="16"/>
+                        <TextBlock Text="{Binding StudentEmail}"
+                                   Foreground="#98a2b3"
+                                   FontSize="13"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="Log out"
+                                Click="LogoutButton_Click"
+                                Height="30"
+                                Padding="16,4"
+                                Background="#ff5a5f"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Margin="0,0,16,0"
+                                FontWeight="SemiBold"/>
+                        <Button Click="MinimizeButton_Click"
+                                Width="30" Height="30"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Margin="0,0,10,0"
+                                ToolTip="Minimize">
+                            <Image Source="/Images/minimize.png" Stretch="Uniform"/>
+                        </Button>
+                        <Button Click="FullscreenButton_Click"
+                                Width="30" Height="30"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Margin="0,0,10,0"
+                                ToolTip="Toggle Fullscreen">
+                            <Image Source="/Images/fullscreen.png" Stretch="Uniform"/>
+                        </Button>
+                        <Button Click="CloseButton_Click"
+                                Width="30" Height="30"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                ToolTip="Close">
+                            <Image Source="/Images/close.png" Stretch="Uniform"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Dashboard View -->
+                <ScrollViewer Grid.Row="1"
+                              Visibility="{Binding SelectedSection, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter=Dashboard}">
+                    <StackPanel Margin="0,20,0,0">
+                        <!-- Hero Section -->
+                        <Border CornerRadius="24" Padding="32" Margin="0,0,0,24">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#1a73e8" Offset="0"/>
+                                    <GradientStop Color="#6f9bff" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock Text="Search • Borrow • Grow"
+                                               FontSize="30"
+                                               FontWeight="SemiBold"
+                                               Foreground="White"/>
+                                    <TextBlock Text="Discover curated titles, filter by category, and reserve copies instantly."
+                                               Foreground="#f2f6ff"
+                                               Margin="0,12,0,22"/>
+
+                                    <Border CornerRadius="40" Background="#f8fbff" Padding="14" Width="480">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Path Data="M21.5,19.5L16.5,14.5C17.8,12.8 18.5,10.6 18.5,8.25C18.5,3.7 14.8,0 10.25,0C5.7,0 2,3.7 2,8.25C2,12.8 5.7,16.5 10.25,16.5C12.6,16.5 14.8,15.8 16.5,14.5L21.5,19.5L21.5,19.5Z M4,8.25C4,4.8 6.8,2 10.25,2C13.7,2 16.5,4.8 16.5,8.25C16.5,11.7 13.7,14.5 10.25,14.5C6.8,14.5 4,11.7 4,8.25Z"
+                                                  Fill="#1a73e8"
+                                                  Width="22" Height="22"
+                                                  Margin="0,0,12,0"/>
+                                            <TextBox x:Name="SearchBox"
+                                                     Grid.Column="1"
+                                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                                     FontSize="16"
+                                                     Foreground="#101828"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     Padding="4">
+                                                <TextBox.Template>
+                                                    <ControlTemplate TargetType="TextBox">
+                                                        <Grid>
+                                                            <Border Background="{TemplateBinding Background}"/>
+                                                            <ScrollViewer x:Name="PART_ContentHost"/>
+                                                            <TextBlock Text="Search by title, author, ISBN or category..."
+                                                                       Foreground="#98a2b3"
+                                                                       FontStyle="Italic"
+                                                                       Margin="4,0,0,0"
+                                                                       IsHitTestVisible="False"
+                                                                       Visibility="{Binding Text, ElementName=SearchBox, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </TextBox.Template>
+                                            </TextBox>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="40,0,0,0">
+                                    <Border Background="#ffffff20" CornerRadius="18" Padding="16,12" Margin="0,0,0,14">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding AvailableBooks.Count}"
+                                                       Foreground="White"
+                                                       FontSize="42"
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="Available Copies"
+                                                       Foreground="White"
+                                                       FontSize="18"
+                                                       Margin="12,0,0,0"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Background="#ffffff20" CornerRadius="18" Padding="16,12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding FilteredBooks.Count}"
+                                                       Foreground="White"
+                                                       FontSize="42"
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="Filtered Results"
+                                                       Foreground="White"
+                                                       FontSize="18"
+                                                       Margin="12,0,0,0"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Reading Snapshot + Quick Filters -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Style="{StaticResource CardSurfaceStyle}" Margin="0,0,24,0">
+                                <StackPanel>
+                                    <TextBlock Text="Your reading snapshot"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Foreground="#101828"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                        <StackPanel Margin="0,0,20,0">
+                                            <TextBlock Text="Available now" Foreground="#667085" FontSize="13"/>
+                                            <TextBlock Text="{Binding AvailableBooks.Count}" FontSize="32" FontWeight="Bold" Foreground="#101828"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="In search" Foreground="#667085" FontSize="13"/>
+                                            <TextBlock Text="{Binding FilteredBooks.Count}" FontSize="32" FontWeight="Bold" Foreground="#101828"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Grid.Column="1">
+                                <Border Style="{StaticResource CardSurfaceStyle}" Margin="0,0,0,22">
+                                    <StackPanel>
+                                        <TextBlock Text="Quick filters" FontWeight="SemiBold" Foreground="#101828" FontSize="15" Margin="0,0,0,10"/>
+                                        <WrapPanel>
+                                            <Border Style="{StaticResource ChipStyle}">
+                                                <TextBlock Text="Most Popular" Foreground="#1a73e8" FontWeight="SemiBold"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ChipStyle}">
+                                                <TextBlock Text="New Arrivals" Foreground="#1a73e8" FontWeight="SemiBold"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ChipStyle}">
+                                                <TextBlock Text="Programming" Foreground="#1a73e8" FontWeight="SemiBold"/>
+                                            </Border>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Borrowed Books -->
+                        <Border Style="{StaticResource CardSurfaceStyle}" Margin="0,24,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Your borrowed books"
+                                           FontSize="22"
+                                           FontWeight="SemiBold"
+                                           Foreground="#101828"/>
+                                <TextBlock Text="Books currently checked out on your account."
+                                           Foreground="#667085"
+                                           Margin="0,4,0,16"/>
+
+                                <TextBlock Text="No active loans right now."
+                                           Foreground="#98a2b3"
+                                           FontStyle="Italic"
+                                           Visibility="{Binding BorrowedBooks.Count, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=0}"/>
+
+                                <ItemsControl ItemsSource="{Binding BorrowedBooks}" Margin="0,12,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#f4f7ff"
+                                                    BorderBrush="#e3e8ff"
+                                                    BorderThickness="1"
+                                                    CornerRadius="16"
+                                                    Padding="18"
+                                                    Margin="0,0,0,12">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding BookCopy.Book.Title}"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="16"
+                                                                   Foreground="#101828"/>
+                                                        <TextBlock Text="{Binding BookCopy.Book.Author}"
+                                                                   Foreground="#667085"
+                                                                   Margin="0,4,0,0"/>
+                                                        <TextBlock Text="{Binding BookCopy.CopyNumber, StringFormat='Copy #{0}'}"
+                                                                   Foreground="#667085"
+                                                                   FontSize="12"
+                                                                   Margin="0,4,0,0"/>
+                                                        <TextBlock Text="{Binding DueDate, StringFormat='Due on {0:MMM dd, yyyy}'}"
+                                                                   Foreground="#ff7a18"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="12"
+                                                                   Margin="0,6,0,0"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1"
+                                                            Content="Return book"
+                                                            Command="{Binding DataContext.ReturnBorrowedBookCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding TransactionId}"
+                                                            Style="{StaticResource mainbutton}"
+                                                            Width="150"
+                                                            Height="36"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Browse Catalog View -->
+                <ScrollViewer Grid.Row="1"
+                              Visibility="{Binding SelectedSection, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter=BrowseCatalog}">
+                    <Border Style="{StaticResource CardSurfaceStyle}"
+                            Padding="32"
+                            Margin="0,20,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Browse all copies"
+                                           FontSize="28"
+                                           FontWeight="SemiBold"
+                                           Foreground="#111618"/>
+                                <TextBlock Text="{Binding FilteredBooks.Count, StringFormat='Showing {0} matches'}"
+                                           Foreground="#64748B"
+                                           FontSize="14"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding FilterChips}" Margin="0,24,0,24">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F1F5F9"
+                                                CornerRadius="20"
+                                                Padding="14,8"
+                                                Margin="0,0,8,8"
+                                                BorderBrush="#E2E8F0"
+                                                BorderThickness="1">
+                                            <TextBlock Text="{Binding}"
+                                                       Foreground="#1E293B"
+                                                       FontWeight="Medium"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <DataGrid Grid.Row="2"
+                                      ItemsSource="{Binding FilteredBooks}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      RowHeaderWidth="0"
+                                      BorderThickness="0"
+                                      CanUserAddRows="False"
+                                      RowHeight="68"
+                                      AlternatingRowBackground="#FBFCFE">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Title" Binding="{Binding Book.Title}" Width="2.4*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontWeight" Value="Medium"/>
+                                                <Setter Property="Foreground" Value="#0F172A"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Author" Binding="{Binding Book.Author}" Width="1.3*"/>
+                                    <DataGridTextColumn Header="Category" Binding="{Binding Book.Category.CategoryName}" Width="1*"/>
+                                    <DataGridTextColumn Header="Copy #" Binding="{Binding CopyNumber}" Width="0.7*"/>
+                                    <DataGridTemplateColumn Header="Action" Width="1.1*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Request copy"
+                                                        Command="{Binding DataContext.RequestBookCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding BookCopyId}"
+                                                        Background="#2563EB"
+                                                        Foreground="White"
+                                                        Height="36"
+                                                        Padding="16,0"
+                                                        FontWeight="Medium"
+                                                        Cursor="Hand">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border CornerRadius="8" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+                </ScrollViewer>
+
+                <!-- Placeholder Views -->
+                <Border Grid.Row="1"
+                        Visibility="{Binding SelectedSection, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter=Requests}"
+                        Style="{StaticResource CardSurfaceStyle}"
+                        Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Requests"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="#101828"/>
+                        <TextBlock Text="Track your pending book requests once submitted. Status updates coming soon."
+                                   Foreground="#667085"
+                                   Margin="0,12,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="1"
+                        Visibility="{Binding SelectedSection, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter=Loans}"
+                        Style="{StaticResource CardSurfaceStyle}"
+                        Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Active loans"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="#101828"/>
+                        <TextBlock Text="Loan tracking is under development. Contact the librarian for due dates."
+                                   Foreground="#667085"
+                                   Margin="0,12,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="1"
+                        Visibility="{Binding SelectedSection, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter=Settings}"
+                        Style="{StaticResource CardSurfaceStyle}"
+                        Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Profile Settings"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="#101828"/>
+                        <TextBlock Text="Review your account details. Contact admin to update information."
+                                   Foreground="#667085"
+                                   Margin="0,12,0,0"
+                                   TextWrapping="Wrap"/>
+                        <StackPanel Margin="0,24,0,0">
+                            <TextBlock Text="Full name" Foreground="#98a2b3" FontSize="13"/>
+                            <TextBlock Text="{Binding StudentName}" FontSize="18" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,16,0,0">
+                            <TextBlock Text="Email" Foreground="#98a2b3" FontSize="13"/>
+                            <TextBlock Text="{Binding StudentEmail}" FontSize="18" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
